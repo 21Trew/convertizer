@@ -9,11 +9,40 @@ const app = express();
 const PORT = 3000;
 
 // Указываем путь к FFmpeg
-const ffmpegPath = path.join(__dirname, "ffmpeg", "bin", "ffmpeg.exe");
-const ffprobePath = path.join(__dirname, "ffmpeg", "bin", "ffprobe.exe");
+// const ffmpegPath = path.join(__dirname, "ffmpeg", "bin", "ffmpeg.exe");
+// const ffprobePath = path.join(__dirname, "ffmpeg", "bin", "ffprobe.exe");
+// ============================================
+// ==== FFMPEG - АВТОВЫБОР ПЛАТФОРМЫ ==========
+// ============================================
+const isWindows = process.platform === 'win32';
+const isProduction = process.env.NODE_ENV === 'production';
 
-console.log("FFmpeg путь:", ffmpegPath);
-console.log("FFprobe путь:", ffprobePath);
+let ffmpegPath, ffprobePath;
+
+if (isProduction) {
+  // RENDER - используем системный FFmpeg
+  ffmpegPath = 'ffmpeg';
+  ffprobePath = 'ffprobe';
+  console.log('☁️ Render: используем системный FFmpeg');
+} 
+else if (isWindows) {
+  // Windows - локальный
+  ffmpegPath = path.join(__dirname, "ffmpeg", "bin", "ffmpeg.exe");
+  ffprobePath = path.join(__dirname, "ffmpeg", "bin", "ffprobe.exe");
+  console.log('🪟 Windows: локальный FFmpeg');
+}
+else {
+  // MacOS/Linux локально
+  ffmpegPath = 'ffmpeg';
+  ffprobePath = 'ffprobe';
+  console.log('🐧 Linux/Mac: системный FFmpeg');
+}
+
+console.log(`📁 FFmpeg путь: ${ffmpegPath}`);
+console.log(`📁 FFprobe путь: ${ffprobePath}`);
+
+// console.log("FFmpeg путь:", ffmpegPath);
+// console.log("FFprobe путь:", ffprobePath);
 
 // Создаем папки
 const folders = ["uploads", "uploads/input", "uploads/output"];
