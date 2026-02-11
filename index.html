@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VideoCompress | Сжатие и конвертация видео</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-video"></i>
+        </div>
+        <span>VideoCompress</span>
+      </div>
+      <h1>Сжатие и конвертация видео онлайн</h1>
+      <p class="tagline">Быстро уменьшите размер видео или конвертируйте в другой формат без потери качества. Работает
+        прямо в браузере.</p>
+
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-compress-alt"></i>
+          </div>
+          <h3 class="feature-title">Сжать видео</h3>
+          <p class="feature-desc">Уменьшите размер видеофайла до нужного размера или на указанный процент</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          <h3 class="feature-title">Конвертировать</h3>
+          <p class="feature-desc">Преобразуйте видео в любой популярный формат: MP4, AVI, MOV, WEBM и другие</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-tasks"></i>
+          </div>
+          <h3 class="feature-title">Сжать и конвертировать</h3>
+          <p class="feature-desc">Совместите оба действия: измените размер и формат видео одновременно</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Converter Section -->
+  <section class="converter-section">
+    <div class="container">
+      <h2 class="section-title">Обработка видео</h2>
+      <p class="section-subtitle">Загрузите ваше видео и выберите нужную операцию. Поддерживаются все популярные
+        форматы.</p>
+
+      <div class="converter-box">
+        <div class="tabs">
+          <div class="tab active" data-tab="compress">Сжать видео</div>
+          <div class="tab" data-tab="convert">Конвертировать видео</div>
+          <div class="tab" data-tab="both">Сжать и конвертировать</div>
+        </div>
+
+        <!-- Compress Tab -->
+        <div id="compress" class="tab-content active">
+          <div class="upload-area" id="uploadAreaCompress">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">Загрузите видео файл</div>
+            <div class="upload-subtext">Перетащите файл сюда или нажмите для выбора</div>
+            <button type="button" class="btn" id="selectFileBtnCompress">
+              <i class="fas fa-file-video"></i> Выбрать файл
+            </button>
+            <input type="file" id="fileInputCompress" accept="video/*" style="display: none;">
+          </div>
+
+          <div class="file-info" id="fileInfoCompress">
+            <div class="uploaded-file">
+              <i class="fas fa-file-video"></i>
+              <span class="file-name" id="fileNameCompress"></span>
+              <span class="file-size" id="fileSizeCompress"></span>
+            </div>
+          </div>
+
+          <div class="options">
+            <div class="option-group">
+              <label class="option-label">Способ сжатия</label>
+              <div class="select-wrapper">
+                <select id="compressMethod">
+                  <option value="size">До определенного размера</option>
+                  <option value="percent">На процент</option>
+                  <option value="quality">По качеству</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="option-group" id="sizeOption">
+              <label class="option-label">Целевой размер (МБ)</label>
+              <input type="range" id="targetSize" min="1" max="500" value="50">
+              <span class="range-value" id="sizeValue">50 МБ</span>
+            </div>
+
+            <div class="option-group" id="percentOption" style="display: none;">
+              <label class="option-label">Сжать на (%)</label>
+              <input type="range" id="compressPercent" min="1" max="95" value="50">
+              <span class="range-value" id="percentValue">50%</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn" id="compressBtn">
+              <i class="fas fa-compress-alt"></i> Сжать видео
+            </button>
+            <button class="btn btn-secondary" id="resetBtnCompress">
+              <i class="fas fa-redo"></i> Сбросить
+            </button>
+          </div>
+        </div>
+
+        <!-- Convert Tab -->
+        <div id="convert" class="tab-content">
+          <div class="upload-area" id="uploadAreaConvert">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">Загрузите видео для конвертации</div>
+            <div class="upload-subtext">Перетащите файл сюда или нажмите для выбора</div>
+            <button type="button" class="btn" id="selectFileBtnConvert">
+              <i class="fas fa-file-video"></i> Выбрать файл
+            </button>
+            <input type="file" id="fileInputConvert" accept="video/*" style="display: none;">
+          </div>
+
+          <div class="file-info" id="fileInfoConvert">
+            <div class="uploaded-file">
+              <i class="fas fa-file-video"></i>
+              <span class="file-name" id="fileNameConvert"></span>
+              <span class="file-size" id="fileSizeConvert"></span>
+            </div>
+          </div>
+
+          <div class="options">
+            <div class="option-group">
+              <label class="option-label">Целевой формат</label>
+              <div class="select-wrapper">
+                <select id="targetFormat">
+                  <option value="mp4">MP4 (H.264, наиболее совместимый)</option>
+                  <option value="avi">AVI (Xvid)</option>
+                  <option value="mov">MOV (H.264)</option>
+                  <option value="mkv">MKV (H.264)</option>
+                  <option value="webm">WEBM (VP8)</option>
+                  <option value="flv">FLV (H.264)</option>
+                  <option value="wmv">WMV (Windows Media)</option>
+                  <option value="gif">GIF (анимация)</option>
+                  <option value="3gp">3GP (мобильные устройства)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <label class="option-label">Качество видео</label>
+              <div class="select-wrapper">
+                <select id="videoQuality">
+                  <option value="high">Высокое (рекомендуется)</option>
+                  <option value="medium">Среднее</option>
+                  <option value="low">Низкое (максимальное сжатие)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn" id="convertBtn">
+              <i class="fas fa-exchange-alt"></i> Конвертировать видео
+            </button>
+            <button class="btn btn-secondary" id="resetBtnConvert">
+              <i class="fas fa-redo"></i> Сбросить
+            </button>
+          </div>
+        </div>
+
+        <!-- Both Tab -->
+        <div id="both" class="tab-content">
+          <div class="upload-area" id="uploadAreaBoth">
+            <div class="upload-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">Загрузите видео для обработки</div>
+            <div class="upload-subtext">Перетащите файл сюда или нажмите для выбора</div>
+            <button type="button" class="btn" id="selectFileBtnBoth">
+              <i class="fas fa-file-video"></i> Выбрать файл
+            </button>
+            <input type="file" id="fileInputBoth" accept="video/*" style="display: none;">
+          </div>
+
+          <div class="file-info" id="fileInfoBoth">
+            <div class="uploaded-file">
+              <i class="fas fa-file-video"></i>
+              <span class="file-name" id="fileNameBoth"></span>
+              <span class="file-size" id="fileSizeBoth"></span>
+            </div>
+          </div>
+
+          <div class="options">
+            <div class="option-group">
+              <label class="option-label">Целевой формат</label>
+              <div class="select-wrapper">
+                <select id="bothTargetFormat">
+                  <option value="mp4">MP4 (Наиболее совместимый)</option>
+                  <option value="avi">AVI</option>
+                  <option value="mov">MOV</option>
+                  <option value="webm">WEBM</option>
+                  <option value="mkv">MKV</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <label class="option-label">Максимальный размер (МБ)</label>
+              <input type="range" id="bothTargetSize" min="1" max="500" value="100">
+              <span class="range-value" id="bothSizeValue">100 МБ</span>
+            </div>
+
+            <div class="option-group">
+              <label class="option-label">Качество видео</label>
+              <div class="select-wrapper">
+                <select id="bothVideoQuality">
+                  <option value="high">Высокое</option>
+                  <option value="medium">Среднее (рекомендуется)</option>
+                  <option value="low">Низкое (максимальное сжатие)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn" id="bothBtn">
+              <i class="fas fa-tasks"></i> Сжать и конвертировать
+            </button>
+            <button class="btn btn-secondary" id="resetBtnBoth">
+              <i class="fas fa-redo"></i> Сбросить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">Как это работает</h2>
+      <p class="section-subtitle">Всего 3 простых шага для обработки вашего видео</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Загрузите видео</h3>
+          <p>Выберите файл с вашего устройства. Поддерживаются все популярные форматы видео.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Настройте параметры</h3>
+          <p>Выберите нужный формат, размер или процент сжатия в зависимости от ваших целей.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Скачайте результат</h3>
+          <p>Обработанное видео будет готово для скачивания через несколько секунд.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-video"></i>
+        </div>
+        <span>VideoCompress</span>
+      </div>
+      <p>Онлайн инструмент для сжатия и конвертации видеофайлов</p>
+      <p class="copyright">© 2023 VideoCompress. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- Processing Overlay -->
+  <!-- Processing Overlay -->
+  <div class="processing-overlay" id="processingOverlay">
+    <div class="processing-content">
+      <div style="font-size: 50px; color: var(--primary); margin-bottom: 20px;">
+        <i class="fas fa-video" id="processingIcon"></i>
+      </div>
+      <h3 style="margin-bottom: 10px;" id="processingTitle">Обработка видео</h3>
+      <p id="processingText">Пожалуйста, подождите...</p>
+
+      <!-- Прогресс-бар -->
+      <div style="margin: 25px 0; width: 100%;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span id="progressPercent">0%</span>
+          <span id="progressTime">--:--</span>
+        </div>
+        <div style="
+                background: var(--gray);
+                height: 12px;
+                border-radius: 6px;
+                overflow: hidden;
+                margin-bottom: 5px;
+            ">
+          <div id="progressBar" style="
+                    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+                    height: 100%;
+                    width: 0%;
+                    border-radius: 6px;
+                    transition: width 0.3s ease;
+                "></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-dark);">
+          <span id="progressStatus">Подготовка...</span>
+          <span id="progressSpeed">-</span>
+        </div>
+      </div>
+
+      <!-- Детали процесса -->
+      <div style="
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+        ">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Этап:</span>
+          <span id="processStage" style="font-weight: 600;">Загрузка файла</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <span>Время:</span>
+          <span id="processTime">--:--</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Осталось:</span>
+          <span id="processRemaining">--:--</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 14px; color: var(--gray-dark);">
+        <i class="fas fa-info-circle"></i> Не закрывайте это окно до завершения обработки
+      </div>
+
+      <!-- Кнопка отмены (опционально) -->
+      <button id="cancelProcessing" style="
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-weight: 600;
+            font-size: 14px;
+        ">
+        <i class="fas fa-times"></i> Отменить
+      </button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+
+</html>
