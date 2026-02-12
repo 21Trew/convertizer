@@ -14,28 +14,26 @@ const PORT = 3000;
 // ============================================
 // ==== FFMPEG - АВТОВЫБОР ПЛАТФОРМЫ ==========
 // ============================================
-const isWindows = process.platform === 'win32';
-const isProduction = process.env.NODE_ENV === 'production';
+const isWindows = process.platform === "win32";
+const isProduction = process.env.NODE_ENV === "production";
 
 let ffmpegPath, ffprobePath;
 
 if (isProduction) {
   // RENDER - используем системный FFmpeg
-  ffmpegPath = 'ffmpeg';
-  ffprobePath = 'ffprobe';
-  console.log('☁️ Render: используем системный FFmpeg');
-} 
-else if (isWindows) {
+  ffmpegPath = "ffmpeg";
+  ffprobePath = "ffprobe";
+  console.log("☁️ Render: используем системный FFmpeg");
+} else if (isWindows) {
   // Windows - локальный
   ffmpegPath = path.join(__dirname, "ffmpeg", "bin", "ffmpeg.exe");
   ffprobePath = path.join(__dirname, "ffmpeg", "bin", "ffprobe.exe");
-  console.log('🪟 Windows: локальный FFmpeg');
-}
-else {
+  console.log("🪟 Windows: локальный FFmpeg");
+} else {
   // MacOS/Linux локально
-  ffmpegPath = 'ffmpeg';
-  ffprobePath = 'ffprobe';
-  console.log('🐧 Linux/Mac: системный FFmpeg');
+  ffmpegPath = "ffmpeg";
+  ffprobePath = "ffprobe";
+  console.log("🐧 Linux/Mac: системный FFmpeg");
 }
 
 console.log(`📁 FFmpeg путь: ${ffmpegPath}`);
@@ -157,15 +155,13 @@ function simpleTranslit(text) {
   return result;
 }
 
-// Функция для создания безопасного имени файла - УПРОЩЕННАЯ ВЕРСИЯ
-function createOutputFilename(originalName, prefix = "") {
+// Функция для создания безопасного имени файла - ИСПРАВЛЕННАЯ
+function createOutputFilename(originalName, prefix = "", keepExtension = true) {
   console.log(`🔤 Создание имени для: "${originalName}"`);
 
-  // Берем только имя без расширения
-  const nameWithoutExt = path.basename(
-    originalName,
-    path.extname(originalName),
-  );
+  // Берем имя без расширения
+  const ext = path.extname(originalName);
+  const nameWithoutExt = path.basename(originalName, ext);
 
   // Транслитерируем
   const transliterated = simpleTranslit(nameWithoutExt);
@@ -175,12 +171,15 @@ function createOutputFilename(originalName, prefix = "") {
 
   // Добавляем UUID
   const shortUuid = uuidv4().slice(0, 6);
-
-  // НЕ ДОБАВЛЯЕМ РАСШИРЕНИЕ ЗДЕСЬ!
   finalName = `${finalName}_${shortUuid}`;
 
-  console.log(`✅ Итоговое имя (без расширения): ${finalName}`);
-  return finalName; // Возвращаем без расширения!
+  // Добавляем расширение только если нужно
+  if (keepExtension) {
+    finalName = `${finalName}${ext}`;
+  }
+
+  console.log(`✅ Итоговое имя: ${finalName}`);
+  return finalName;
 }
 
 // Настройка загрузки файлов - используем UUID для хранения
@@ -551,7 +550,9 @@ app.post("/api/video/compress/percent", upload.single("video"), (req, res) => {
   const inputPath = path.join(__dirname, req.file.path);
 
   // Создаем читаемое имя для выходного файла
-  const outputFilename = createOutputFilename(originalName, "compressed");
+  const outputFilenameBase = createOutputFilename(originalName, "compressed");
+  const originalExtension = path.extname(req.file.originalname);
+  const outputFilename = `${outputFilenameBase}${originalExtension}`;
   const outputPath = path.join(__dirname, "uploads/output", outputFilename);
 
   // Ограничиваем процент от 5 до 95 (5% - слабое сжатие, 95% - сильное сжатие)
