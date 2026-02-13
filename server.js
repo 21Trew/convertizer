@@ -393,8 +393,8 @@ app.post("/api/video/compress/size", upload.single("video"), (req, res) => {
       }
 
       // Команда FFmpeg
-      const command = `"${ffmpegPath}" -i "${inputPath}" -b:v ${targetBitrate} -c:a aac -b:a 128k -preset fast -y "${outputPath}"`;
-
+      const command = `"${ffmpegPath}" -i "${inputPath}" -c:v libx264 -crf 28 -preset ultrafast -threads 1 -vf "scale=1280:720" -c:a aac -b:a 128k -y "${outputPath}"`;
+      
       console.log("🚀 Выполняем команду FFmpeg...");
 
       // Обновляем статус
@@ -610,19 +610,17 @@ app.post("/api/video/compress/percent", upload.single("video"), (req, res) => {
       }
 
       function compressWithCRF() {
-        console.log("⚠️  Используем метод CRF (fallback)");
+        console.log("⚠️  Используем метод CRF с ограничением памяти");
 
-        // ПРАВИЛЬНЫЙ CRF: чем больше процент сжатия, тем БОЛЬШЕ значение CRF
-        // CRF 18-23: почти без потерь, 23-28: хорошее качество, 28-35: заметное сжатие, 35-51: сильное сжатие
-        const crf = Math.min(
-          51,
-          Math.max(18, Math.round(18 + (safePercent / 100) * 33)),
-        );
+        // АДАПТИРОВАНО ДЛЯ 1GB RAM:
+        // - scale=1280:720 - уменьшаем до 720p (в 9 раз меньше памяти)
+        // - preset=ultrafast - минимальная нагрузка на CPU
+        // - threads=1 - только одно ядро
+        // - crf=28 - хорошее сжатие, приемлемое качество
 
-        console.log(`🎯 CRF значение: ${crf} (чем больше, тем сильнее сжатие)`);
+        const command = `"${ffmpegPath}" -i "${inputPath}" -c:v libx264 -crf 28 -preset ultrafast -threads 1 -vf "scale=1280:720" -c:a aac -b:a 128k -y "${outputPath}"`;
 
-        const command = `"${ffmpegPath}" -i "${inputPath}" -c:v libx264 -crf ${crf} -preset fast -c:a aac -b:a 128k -y "${outputPath}"`;
-
+        console.log(`🚀 Команда: ${command}`);
         executeFFmpeg(command, outputPath, safePercent);
       }
 
